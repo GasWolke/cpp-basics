@@ -1,64 +1,89 @@
 #include <iostream>
-#include <math.h>
-#include <string>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
-int main()
-{
-	double a, b, c, Xn, Xk, dX, x, F;
-	cout << "Enter a value a, b, c, Xn, Xk, dX: " << endl;
-	cin >> a >> b >> c >> Xn >> Xk >> dX;
-	if (dX > 0) 
-	{
-		cout << string(45, '-') << endl;
-		cout << "|" << string(10, ' ') << "X" << string(10, ' ') << "|" << string(10, ' ') << "F" << string(10, ' ') << "|" << endl;
-		cout << string(45, '-') << endl;
-		x = Xn;
-		while (x <= Xk) 
-		{
-			if ((x + 5 < 0 && c == 0) and x !=0)
-			{
-				F = (1 / (a * x)) - b;
-			}
-			else
-			{
-				if ((x + 5 > 0 && c != 0) and x != 0)
-				{
-					F = (x - a) / x;
+int main() {
+	const double kEps = 1e-15;
+
+	double a, b, c, xn, xk, dx;
+	cout << "Enter a: ";
+	cin >> a;
+	cout << "Enter b: ";
+	cin >> b;
+	cout << "Enter c: ";
+	cin >> c;
+	cout << "Enter xn: ";
+	cin >> xn;
+	cout << "Enter xk >= xn: ";
+	cin >> xk;
+	cout << "Enter dx > 0: ";
+	cin >> dx;
+
+	if (dx <= 0) {
+		cout << "\nInvalid dx. Must be: dx > 0.\n";
+	}
+	else if (xn > xk) {
+		cout << "\nInvalid xk. Must be: xk >= xn.\n";
+	}
+	else {
+		cout << string(33, '-') << endl;
+		cout << "|       x       |       F       |\n";
+		cout << string(33, '-') << endl;
+
+		cout << fixed;
+		cout.precision(3);
+
+		double x = xn;
+		while (x <= xk) {
+			cout << "|" << setw(10) << x << setw(6) << "|";
+
+			double f;
+			if ((x + 5) < 0 && abs(c) < kEps) {
+				if (abs(a * x) < kEps) {
+					cout << " division by 0 |\n";
+					x += dx;
+					continue;
 				}
-				else
-				{
-					if (c != 4)
-					{
-						F = 10 * x / (c - 4);
-					}
-					else
-					{
-						cout << "|" << setw(11) << x << setw(11) << "|" << setw(11) << "-" << setw(11) << "|" << endl;
-						goto err;
-					}
+				else {
+					f = 1 / (a * x) - b;
 				}
 			}
-			if ((((int)a & (int)b) | ((int)b & (int)c)) == 0)
-			{
-				cout << "|" << setw(11) << x << setw(11) << "|" << setw(11) << (int)F << setw(11) << "|" << endl;
+			else if ((x + 5) > 0 && abs(c) >= kEps) {
+				if (abs(x) < kEps) {
+					cout << " division by 0 |\n";
+					x += dx;
+					continue;
+				}
+				else {
+					f = (x - a) / x;
+				}
 			}
+			else {
+				if (abs(c - 4) < kEps) {
+					cout << " division by 0 |\n";
+					x += dx;
+					continue;
+				}
+				else {
+					f = 10 * x / (c - 4);
+				}
+			}
+
+			int ac = static_cast<int>(a);
+			int bc = static_cast<int>(b);
+			int cc = static_cast<int>(c);
+			if ((ac & bc) | (bc & cc))
+				cout << setw(10) << f << setw(7);
 			else
-			{
-				cout << "|" << setw(11) << x << setw(11) << "|" << setw(11) << F << setw(11) << "|" << endl;
-			}
-			err:
-			x += dX;
+				cout << setw(8) << static_cast<int>(f) << setw(9);
+			cout << "|\n";
+
+			x += dx;
 		}
-		cout << string(45, '-') << endl;
+		cout << string(33, '-');
 	}
-	else 
-	{
-		cout << "Inncorect value of dX.";
-	}
+
 	return 0;
 }
-
-
