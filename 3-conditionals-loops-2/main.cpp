@@ -8,15 +8,18 @@ using namespace std;
 int main()
 {
 	const int MaxIter = 500;
+
 	double xn, xk, dx, Eps, f, fp;
 	int n;
+
 	cout << "Enter a value xn, xk, dx, Eps: " << endl;
 	cin >> xn >> xk >> dx >> Eps;
 	cout << string(80, '-') << endl;
 	cout << "|         x        |" << "         F(x)        " << "|          e^(-x)       |" << " Iterations  | " << endl;;
 	cout << string(80, '-') << endl;
 	cout << fixed;
-	cout.precision(8);
+	cout.precision(9);
+
 	for (xn; xn <= xk; xn += dx) 
 	{
 		f = 0;
@@ -43,8 +46,7 @@ int main()
 			cout << "    small eps  " << setw(7) << "|";
 		}
 		cout << setw(17) << exp(-xn) << setw(7) << "|" << setw(7) << n << setw(7) << "|" << endl;
-		cout << string(80, '-') << endl;
 	}
-
+	cout << string(80, '-') << endl;
 	return 0;
 }
