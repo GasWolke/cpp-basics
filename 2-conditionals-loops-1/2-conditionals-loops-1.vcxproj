@@ -23,6 +23,7 @@
     <ProjectGuid>{0A0B1F0A-7ABC-48EC-890C-EA15E3A6188C}</ProjectGuid>
     <RootNamespace>My2conditionalsloops1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectName>02-conditionals-loops-1</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
