@@ -1,78 +1,76 @@
 #include <iostream>
-#include <iomanip>
 #include <cmath>
+#include <iomanip>
 #include <string>
 
 using namespace std;
 
-double Body(double xn, double Eps, int n, const int MaxIter)
-{
-	double f = 0;
-	double fp = 1;
-	while (abs(fp) > Eps)
-	{
-		f += fp;
-		fp = pow((-1), n) * pow(xn, n) / (tgamma(n + 1));
-		n++;
-		if (n > MaxIter)
-		{
-			break;
-		}
-	}
-	return f;
+void PrintTableHead() {
+    cout << string(72, '-') << endl;
+    cout << "|       x       ";
+    cout << "|   e^(-x) (mine)    ";
+    cout << "|   e^(-x) (cmath)   ";
+    cout << "| iterations |\n";
+    cout << string(72, '-') << endl;
 }
 
-void Conclusion(double xn, double f, int n, const int MaxIter)
-{
-	cout << "|" << setw(12) << xn << setw(7) << "|" << setw(15);
-	if (n < MaxIter)
-	{
-		cout << f << setw(7) << "|";
-	}
-	else
-	{
-		cout << "    small eps  " << setw(7) << "|";
-	}
-	cout << setw(17) << exp(-xn) << setw(7) << "|" << setw(7) << n << setw(7) << "|" << endl;
+double ComputeSeries(double x, double eps, int &n, const int kMaxIter) {
+    n = 1;
+    double nth_term = 1;
+    double func = nth_term;
+    while (abs(nth_term) > eps) {
+        nth_term = pow((-1), n) * ((pow(x, n)) / (tgamma(n + 1)));
+        func += nth_term;
+        n++;
+        if (n > kMaxIter) break;
+    }
+    return func;
 }
 
+void PrintTableRow(double x, double func, int n, const int kMaxIter) {
+    cout << "|" << setw(13) << x << setw(3) << "|" << setw(15);
+    if (n <= kMaxIter)
+        cout << func << setw(6) << "|";
+    else
+        cout << "   limit exceeded   |";
+    cout << setw(15) << exp(-x) << setw(6) << "|";
+    cout << setw(7) << n << setw(7) << "|\n";
+}
 
-int main()
-{
-	const int MaxIter = 500;
+int main() {
+    const int kMaxIter = 1000;
 
-	double xn, xk, dx, Eps;
-	int n;
+    double xn, xk, dx, eps;
+    cout << "Enter xn: ";
+    cin >> xn;
+    cout << "Enter xk >= xn: ";
+    cin >> xk;
+    cout << "Enter dx > 0: ";
+    cin >> dx;
+    cout << "Enter eps > 0: ";
+    cin >> eps;
 
-	cout << "Enter a value xn, xk, dx, Eps: " << endl;
-	cin >> xn >> xk >> dx >> Eps;
+    if (dx <= 0) {
+        cout << "\nError dx.\n";
+    }
+    else if (eps <= 0) {
+        cout << "\nError eps.\n";
+    }
+    else if (xn > xk) {
+        cout << "\nError xk.\n";
+    }
+    else {
+        cout << fixed;
+        cout.precision(9);
 
-	if (dx <= 0)
-	{
-		cout << "Incorrect value dx ";
-	}
-	else if (Eps <= 0) {
-		cout << "Incorrect value Eps ";
-	}
-	else if (xn > xk) {
-		cout << "Incorrect value xk ";
-	}
-	else
-	{
+        PrintTableHead();
+        for (; xn <= xk; xn += dx) {
+            int n;
+            double func = ComputeSeries(xn, eps, n, kMaxIter);
+            PrintTableRow(xn, func, n, kMaxIter);
+        }
+        cout << string(72, '-') << endl;
+    }
 
-		cout << string(80, '-') << endl;
-		cout << "|         x        |" << "         F(x)        " << "|          e^(-x)       |" << " Iterations  | " << endl;;
-		cout << string(80, '-') << endl;
-		cout << fixed;
-		cout.precision(6);
-
-		for (xn; xn <= xk; xn += dx)
-		{
-			n = 1;
-			double f = Body(xn, Eps, n, MaxIter);
-			Conclusion(xn, f, n, MaxIter);
-		}
-		cout << string(80, '-') << endl;
-		return 0;
-	}
+    return 0;
 }
